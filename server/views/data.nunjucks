@@ -1,0 +1,12 @@
+{% extends 'server/views/layout.nunjucks' %}
+
+{% block project_style %}
+{% endblock %}
+
+{% block project_script %}
+    {% if n_env %}
+        <script src="//localhost:8080/dist/data.js"></script>
+    {% else %}
+        <script src="/dist/data.js"></script>
+    {% endif %}
+{% endblock %}

@@ -63,21 +63,25 @@ module.exports = {
               'css-loader',
               'sass-loader?indentedSyntax'
             ]
-          }
+          },
           // other vue-loader options go here
+          plugins:['syntax-dynamic-import']
         }
       },
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        options:{
+          plugins:['syntax-dynamic-import']
+        }
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]',
-          publicPath: 'http://localhost:8080/dist/',
+          // publicPath: 'http://localhost:8080/dist/',
         }
       },
       {
@@ -108,17 +112,18 @@ if (process.env.NODE_ENV === 'production') {
   module.exports.output = {
     path: path.resolve(__dirname, '../server/public/dist'),
     publicPath: '/dist/',
-    filename: '[name].js'
+    filename: '[name].js',
+    chunkFilename: '[name].js'
   }
-  module.exports.module = {
-    rules: [
-      {
-        options: {
-          publicPath: '/dist/'
-        }
-      },
-    ]
-  }
+  // module.exports.module = {
+  //   rules: [
+  //     {
+  //       options: {
+  //         publicPath: '/dist/'
+  //       }
+  //     },
+  //   ]
+  // }
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({

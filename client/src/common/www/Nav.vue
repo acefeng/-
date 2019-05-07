@@ -1,51 +1,79 @@
 <template>
   <div class="nav_main">
-    <div class="logo">
-    </div>
+    <div class="logo" />
     <ul>
-      <li :class="{thischeck: isCheck === 1}">
+      <li :class="{thischeck: isCheck === 1}" @mouseover="navHoverOver(0)">
         <i class="el-icon-s-home"></i>
         <span>概述</span>
       </li>
-      <li :class="{thischeck: isCheck === 2}">
+      <li :class="{thischeck: isCheck === 2, li_hover: isHover === 2}" @mouseover="navHoverOver(2)">
         <i class="el-icon-price-tag"></i>
         <span>商品</span>
       </li>
-      <li :class="{thischeck: isCheck === 3}">
+      <li :class="{thischeck: isCheck === 3, li_hover: isHover === 3}" @mouseover="navHoverOver(3)">
         <i class="el-icon-tickets"></i>
         <span>订单</span>
       </li>
-      <li :class="{thischeck: isCheck === 4}">
+      <li :class="{thischeck: isCheck === 4, li_hover: isHover === 4}" @mouseover="navHoverOver(4)">
         <i class="el-icon-s-custom"></i>
         <span>客户</span>
       </li>
-      <li :class="{thischeck: isCheck === 5}">
+      <li :class="{thischeck: isCheck === 5, li_hover: isHover === 5}" @mouseover="navHoverOver(5)">
         <i class="el-icon-s-data"></i>
         <span>数据</span>
       </li>
-      <li :class="{thischeck: isCheck === 6}">
+      <li :class="{thischeck: isCheck === 6, li_hover: isHover === 6}" @mousemove="navHoverOver(6)" @mouseleave="navHoverLeave('isLastOut')">
         <i class="el-icon-money"></i>
         <span>资产</span>
       </li>
     </ul>
-      
+    <child-nav v-show="[2,3,4,5,6].indexOf(isHover) !== -1" :navHoverLeave="navHoverLeave" :is-hover="isHover" :change-last-in="changeLastIn"/>
   </div>
 </template>
 
 <script>
+import ChildNav from './childNav';
+import { setTimeout, clearTimeout } from 'timers';
 export default {
+  components: {
+    'child-nav': ChildNav
+  },
   data () {
-    return {  
+    return {
+      isHover: 0,
+      isLastInChild: false,
+      leaveTimer: null
     }
   },
   props: {
     isCheck: Number
   },
   mounted() {
-    
+    if(this.isCheck!==1) {
+      this.isHover = this.isCheck;
+    }
   },
   methods: {
-   
+    navHoverOver(isLi) {
+      if(this.leaveTimer) {
+        clearTimeout(this.leaveTimer);
+      }
+      if(isLi===0) {
+        this.isHover = this.isCheck;
+      }else {
+        this.isHover = isLi;
+      }
+    },
+    navHoverLeave() {
+      this.leaveTimer = setTimeout(() => {
+        this.isHover = this.isCheck;
+      }, 5);
+    },
+    changeLastIn(is_hover) {
+      setTimeout(() => {
+        this.navHoverOver(is_hover)
+      }, 0);
+    }
   }
 }
 </script>
@@ -56,6 +84,7 @@ export default {
   width: 100px;
   height: 100%;
   position: fixed;
+  z-index: 999;
   left: 0px;
   top: 0px;
 
@@ -74,11 +103,11 @@ export default {
     color: #c8c9cc;
     text-align: center;
     line-height: 40px;
-
-    &:hover {
-      background: #666;
-      cursor: pointer;
-    }
+    cursor: pointer;
+  }
+  
+  .li_hover {
+    background: #666;
   }
 
   .thischeck {
