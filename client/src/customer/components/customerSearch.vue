@@ -3,7 +3,7 @@
     <div class="customer_center">
       <div class="customer_title">客户查询</div>
       <div class="customer_center_bac">
-        <customer-tag-table />
+        <customer-search-table />
       </div>
     </div>
     <div class="customer_help">
@@ -21,10 +21,10 @@
 </template>
 
 <script>
-import CustomerTagTable from '../common/customerTagTable';
+import CustomerSearchTable from '../common/customerSearchTable';
 export default {
   components: {
-    'customer-tag-table': CustomerTagTable
+    'customer-search-table': CustomerSearchTable
   },
   data () {
     return {

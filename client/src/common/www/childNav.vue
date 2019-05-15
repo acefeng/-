@@ -2,8 +2,8 @@
   <div class="child_nav" @mouseover="changeLastIn(isHover)" @mouseleave="navHoverLeave('isChildDiv')">
     <div class="child_nav_title">{{ navTitle }}</div>
     <ul>
-      <li v-for="item in navList" :key="item">
-        <span>{{ item }}</span>
+      <li v-for="(item,index) in navList" :key="index">
+        <span><a :href="navUrlList[index]">{{ item }}</a></span>
       </li>
     </ul>
   </div>
@@ -13,12 +13,9 @@
 export default {
   data () {
     return {
-      navTitle: '商品管理',
-      navList: [
-        '商品管理',
-        '商品分组',
-        '商品页模板'
-      ]
+      navTitle: '',
+      navList: [],
+      navUrlList: []
     }
   },
   props: {
@@ -36,19 +33,24 @@ export default {
     changeShow(next) {
       if(next === 2) {
         this.navTitle = '商品管理';
-        this.navList = ['商品管理', '商品分组', '商品页模板'];
+        this.navList = ['商品管理', '商品分组'];
+        this.navUrlList = ['/goods#/', '/goods#/goods_group'];
       } else if(next === 3) {
         this.navTitle = '订单管理';
         this.navList = ['订单查询', '批量发货', '评价管理', '退款订单'];
+        this.navUrlList = ['/order#/', '/order#/orderDeliver', '/order#/orderEvaluate', '/order#/orderRefund'];
       } else if(next === 4) {
         this.navTitle = '客户管理';
         this.navList = ['客户查询', '标签管理', '等级管理'];
+        this.navUrlList = ['/customer#/', '/customer#/customerTag', '/customer#/customerLevel'];
       } else if(next === 5) {
         this.navTitle = '数据管理';
         this.navList = ['数据概览', '商品概览', '交易概览', '客户概览'];
+        this.navUrlList = ['/data#/', '/data#/goodsSummary', '/data#/tradeSummary', '/data#/customerSummary'];
       } else if(next === 6) {
         this.navTitle = '资产管理';
-        this.navList = ['账户总揽', '店铺余额', '储值资金'];
+        this.navList = ['账户总揽', '店铺余额'];
+        this.navUrlList = ['/capital#/', '/capital#/capitalShop'];
       }
     }
   }
@@ -81,6 +83,10 @@ export default {
     span {
       cursor: pointer;
 
+      a {
+        color: #000;
+        text-decoration: none;
+      }
       &:hover {
         color: #38f;
       }

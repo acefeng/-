@@ -2,7 +2,7 @@ module.exports = [
   [
       'GET',
       '/customer',
-      '../controllers/customer.js',
+      '../controllers/customer',
       'getIndex'
   ]
 ];

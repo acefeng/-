@@ -9,15 +9,25 @@ module.exports = function (sequelize, DataTypes) {
       autoIncrement: true,
       field: 'id'
     },
-    name: {
+    login_name: {
       type: DataTypes.STRING(45),
       allowNull: false,
-      field: 'name'
+      field: 'login_name'
     },
-    age: {
-      type: DataTypes.INTEGER(20),
+    password: {
+      type: DataTypes.STRING(50),
       allowNull: false,
-      field: 'age'
+      field: 'password'
+    },
+    phone: {
+      type: DataTypes.STRING(15),
+      allowNull: false,
+      field: 'phone'
+    },
+    user_name: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+      field: 'user_name'
     }
   }, {
     tableName: 'user'

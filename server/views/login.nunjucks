@@ -5,8 +5,8 @@
 
 {% block project_script %}
     {% if n_env %}
-        <script src="//localhost:8080/dist/as22.js"></script>
+        <script src="//localhost:8080/dist/login.js"></script>
     {% else %}
-        <script src="/dist/as22.js"></script>
+        <script src="/dist/login.js"></script>
     {% endif %}
 {% endblock %}

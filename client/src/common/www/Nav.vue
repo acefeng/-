@@ -4,27 +4,27 @@
     <ul>
       <li :class="{thischeck: isCheck === 1}" @mouseover="navHoverOver(0)">
         <i class="el-icon-s-home"></i>
-        <span>概述</span>
+        <span><a href="/">概述</a></span>
       </li>
       <li :class="{thischeck: isCheck === 2, li_hover: isHover === 2}" @mouseover="navHoverOver(2)">
         <i class="el-icon-price-tag"></i>
-        <span>商品</span>
+        <span><a href="/goods">商品</a></span>
       </li>
       <li :class="{thischeck: isCheck === 3, li_hover: isHover === 3}" @mouseover="navHoverOver(3)">
         <i class="el-icon-tickets"></i>
-        <span>订单</span>
+        <span><a href="/order">订单</a></span>
       </li>
       <li :class="{thischeck: isCheck === 4, li_hover: isHover === 4}" @mouseover="navHoverOver(4)">
         <i class="el-icon-s-custom"></i>
-        <span>客户</span>
+        <span><a href="/customer">客户</a></span>
       </li>
       <li :class="{thischeck: isCheck === 5, li_hover: isHover === 5}" @mouseover="navHoverOver(5)">
         <i class="el-icon-s-data"></i>
-        <span>数据</span>
+        <span><a href="/data">数据</a></span>
       </li>
       <li :class="{thischeck: isCheck === 6, li_hover: isHover === 6}" @mousemove="navHoverOver(6)" @mouseleave="navHoverLeave('isLastOut')">
         <i class="el-icon-money"></i>
-        <span>资产</span>
+        <span><a href="/capital">资产</a></span>
       </li>
     </ul>
     <child-nav v-show="[2,3,4,5,6].indexOf(isHover) !== -1" :navHoverLeave="navHoverLeave" :is-hover="isHover" :change-last-in="changeLastIn"/>
@@ -104,6 +104,11 @@ export default {
     text-align: center;
     line-height: 40px;
     cursor: pointer;
+
+    span a {
+      color: #c8c9cc;
+      text-decoration: none;
+    }
   }
   
   .li_hover {
@@ -113,6 +118,10 @@ export default {
   .thischeck {
     color: #333;
     background: white;
+
+    a {
+      color: #333;
+    }
   } 
 }
 </style>

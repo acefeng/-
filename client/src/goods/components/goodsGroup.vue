@@ -4,6 +4,9 @@
       <div class="goods_title">商品管理</div>
       <div class="goods_center_bac">
         <div class="goods_center_main">
+          <div>
+            <el-button @click="open">新增分组</el-button>
+          </div>
           <el-table
             :data="tableData"
             style="width: 100%">
@@ -26,7 +29,7 @@
               align="right"
               header-align="right">
               <template>
-                <span>推广</span>
+                <span>删除</span>
               </template>
             </el-table-column>
           </el-table>
@@ -47,6 +50,16 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      title="新增标签"
+      :visible.sync="dialogVisible"
+      width="30%">
+      <el-input v-model="groupName" placeholder="请输入内容"></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogCancel">取 消</el-button>
+        <el-button type="primary" @click="dialogAdd">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -73,12 +86,46 @@ export default {
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      }],
+      dialogVisible: false,
+      groupName: ''
     }
   },
+  mounted() {
+  },
   methods: {
-    handleClick(tab, event) {
-      
+    dialogAdd() {
+      this.$axios({
+        method: 'post',
+        url: '/addGoodsTag',
+        data: {
+          groupName: this.groupName
+        }
+      }).then((res) => {
+        if(res.data.result) {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          });
+          this.dialogVisible = false;
+        } else {
+          this.$message({
+            type: 'info',
+            message: '后台错误，添加失败'
+          });    
+        }
+      }).catch((err) => {
+        this.$message({
+          type: 'info',
+          message: '网络错误，添加失败。'
+        });    
+      })
+    },
+    dialogCancel() {
+      this.dialogVisible = false;
+    },
+    open() {
+      this.dialogVisible = true;
     }
   }
 }

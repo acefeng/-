@@ -2,7 +2,7 @@ module.exports = [
   [
       'GET',
       '/data',
-      '../controllers/data.js',
+      '../controllers/data',
       'getIndex'
   ]
 ];

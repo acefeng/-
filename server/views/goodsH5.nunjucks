@@ -1,0 +1,14 @@
+{% extends 'server/views/layout.nunjucks' %}
+{% block project_meta %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+{% endblock %}
+{% block project_style %}
+{% endblock %}
+
+{% block project_script %}
+    {% if n_env %}
+        <script src="//localhost:8080/dist/goodsH5.js"></script>
+    {% else %}
+        <script src="/dist/goodsH5.js"></script>
+    {% endif %}
+{% endblock %}

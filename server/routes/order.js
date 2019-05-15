@@ -2,7 +2,7 @@ module.exports = [
   [
       'GET',
       '/order',
-      '../controllers/order.js',
+      '../controllers/order',
       'getIndex'
-  ]
+  ],
 ];

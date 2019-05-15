@@ -21,7 +21,7 @@ var fs = require("fs");
       }else if(item[0] ==='POST') {
         (function addPostRouter() {
           const thisRoute = require(path.resolve(__dirname, item[2]));
-          router.get(item[1], new thisRoute()[item[3]]);
+          router.post(item[1], new thisRoute()[item[3]]);
         })()
       }else {
         throw 'router is not get or post'

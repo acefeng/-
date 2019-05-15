@@ -24,6 +24,14 @@ const routes = [
     }
   },
   {
+    path: '/orderEvaluate',
+    component: () => import(/* webpackChunkName:'orderEvaluate'*/ './components/orderEvaluate'),
+    name: 'orderEvaluate',
+    meta: {
+      title: '评价管理'
+    }
+  },
+  {
     path: '/orderRefund',
     component: () => import(/* webpackChunkName:'orderRefund'*/ './components/orderRefund'),
     name: 'orderRefund',

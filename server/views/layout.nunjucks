@@ -5,7 +5,11 @@
         <title>{{ title }}</title>
         <link href="/stylesheets/style.css" rel="stylesheet">
         <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+        {% block project_meta %}{% endblock %}
         {% block project_style %}{% endblock %}
+        <script>
+            var _global = {{ global | safe }};
+        </script>
     </head>
     <body>
         {% block content %}

@@ -6,13 +6,19 @@
         <div class="goods_center_main">
           <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="销售中" name="marketing">
-              <main-table :active-name="activeName"/>
+              <main-table 
+                active-name="marketing" 
+                :goods-groups-list="goodsGroupsList" 
+                :table-show-data="tableShowDataInMar" 
+                :resetTalbeData="resetTalbeData" 
+                :selectTalbeData="selectTalbeData"/>
             </el-tab-pane>
             <el-tab-pane label="已售罄" name="soldOut">
-              <main-table :active-name="activeName"/>
-            </el-tab-pane>
-            <el-tab-pane label="仓库中" name="inWarehouse">
-              <main-table :active-name="activeName"/>
+              <main-table active-name="soldOut" 
+                :goods-groups-list="goodsGroupsList" 
+                :table-show-data="tableShowDataInOut" 
+                :resetTalbeData="resetTalbeData"
+                :selectTalbeData="selectTalbeData"/>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -43,10 +49,59 @@ export default {
   },
   data () {
     return {
-      activeName: 'marketing'
+      activeName: 'marketing',
+      goodsGroupsList: [],
+      tableShowDataInOut: [],
+      tableShowDataInMar: []
     }
   },
+  mounted() {
+    this.resetTalbeData();
+  },
   methods: {
+    selectTalbeData(sel, type) {
+      const goodsList = sel;
+      // const goodsTagList = this.goodsGroupsList;
+      // for(let o=0;o<goodsList.length;o++) {
+      //   for(let i=0;i<goodsTagList.length;i++) {
+      //     if(goodsList[o].goods_group_id == goodsTagList[i].id) {
+      //       goodsList[o].goods_group_id = goodsTagList[i].group_name;
+      //     }
+      //   }
+      // }
+      if(type === 'marketing') {
+        this.tableShowDataInMar = sel;
+      } else if(type === 'soldOut') {
+        this.tableShowDataInOut = sel;
+      }
+    },
+    resetTalbeData(data, type) {
+      if(data) {
+        this.tableShowDataInMar = data;
+      } else {
+        this.$axios({
+          method: "post",
+          url: "/resetMainData",
+        })
+        .then(res => {
+          const goodsList = res.data.result.goodsList;
+          const goodsTagList = res.data.result.goodsTagList;
+          for(let o=0;o<goodsList.length;o++) {
+            for(let i=0;i<goodsTagList.length;i++) {
+              if(goodsList[o].goods_group_id == goodsTagList[i].id) {
+                goodsList[o].goods_group_id = goodsTagList[i].group_name;
+              }
+            }
+          }
+          this.goodsGroupsList = goodsTagList;
+          this.tableShowDataInMar = goodsList;
+          this.tableShowDataInOut = goodsList;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      }
+    },
     handleClick(tab, event) {
       
     }

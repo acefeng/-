@@ -7,14 +7,38 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 const routes = [
-  // {
-  //   path: '/',
-  //   component: () => import(/* webpackChunkName:'goodsMain'*/ './components/goodsMain'),
-  //   name: 'goodsMain',
-  //   meta: {
-  //     title: '商品管理'
-  //   }
-  // }
+  {
+    path: '/',
+    component: () => import(/* webpackChunkName:'dataSummary'*/ './components/dataSummary.vue'),
+    name: 'dataSummary',
+    meta: {
+      title: '数据概览'
+    }
+  },
+  {
+    path: '/goodsSummary',
+    component: () => import(/* webpackChunkName:'dataGoodsSummary'*/ './components/dataGoodsSummary.vue'),
+    name: 'dataGoodsSummary',
+    meta: {
+      title: '商品概览'
+    }
+  },
+  {
+    path: '/tradeSummary',
+    component: () => import(/* webpackChunkName:'dataTradeSummary'*/ './components/dataTradeSummary.vue'),
+    name: 'dataTradeSummary',
+    meta: {
+      title: '交易概览'
+    }
+  },
+  {
+    path: '/customerSummary',
+    component: () => import(/* webpackChunkName:'dataCustomerSummary'*/ './components/dataCustomerSummary.vue'),
+    name: 'dataCustomerSummary',
+    meta: {
+      title: '客户概览'
+    }
+  }
 ];
 
 // 初始化路由并定义滚动行为

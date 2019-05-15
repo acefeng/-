@@ -1,8 +1,32 @@
 module.exports = [
   [
-      'GET',
-      '/goods',
-      '../controllers/goods.js',
-      'getIndex'
-  ]
+    'GET',
+    '/goods',
+    '../controllers/goods',
+    'getIndex'
+  ],
+  [
+    'POST',
+    '/addGoodsTag',
+    '../controllers/goods',
+    'postAddGoodsTag'
+  ],
+  [
+    'POST',
+    '/resetMainData',
+    '../controllers/goods',
+    'postResetMainData'
+  ],
+  [
+    'POST',
+    '/addGoods',
+    '../controllers/goods',
+    'postAddGoods'
+  ],
+  [
+    'POST',
+    '/selectSearchGoods',
+    '../controllers/goods',
+    'postSelectSearchGoods'
+  ],
 ];
