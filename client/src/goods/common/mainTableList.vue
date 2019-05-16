@@ -5,7 +5,8 @@
       style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column
-        type="selection">
+        type="selection"
+        v-if="activeName==='marketing'">
       </el-table-column>
 
       <el-table-column
@@ -49,19 +50,27 @@
 
       <el-table-column
         prop="date"
-        label="更改日期"
-        width="100">
+        label="更改日期">
       </el-table-column>
 
       <el-table-column
-        label="操作">
+        label="操作" 
+        v-if="activeName==='marketing'"
+        width="100">
         <template slot-scope="scope">
-          <span :data-goodsid="scope.row.id">推广</span>
+          <el-popover
+            placement="top-start"
+            title="请复制下面链接"
+            width="200"
+            trigger="click"
+            :content="extensionGoods(scope.row.id)">
+            <el-button slot="reference" size="mini">推广</el-button>
+          </el-popover>
         </template>
       </el-table-column>
     </el-table>
-    <div class="table_but_list">
-      <el-button size="small">下架</el-button>
+    <div class="table_but_list" v-if="activeName==='marketing'">
+      <el-button size="small" @click="offLoadingGoods">下架</el-button>
     </div>
   </div>
 </template>
@@ -73,7 +82,8 @@ export default {
   },
   props: {
     tableShowData: Array,
-    activeName: String
+    activeName: String,
+    getSelectGoods: Function
   },
   data () {
     return {
@@ -85,19 +95,20 @@ export default {
     tableShowData(val) {
       this.tableData = [];
       if(this.activeName === 'marketing') {
-        console.log(val);
         let _ = this;
         val.forEach(item => {
-          let obj = {};
-          obj.shopName = item.goods_name;
-          obj.stock = (item.goods_number-item.goods_pay_number);
-          obj.saleVolume = item.goods_pay_number;
-          obj.goods_group_id = item.goods_group_id;
-          obj.date = item.updated_time;
-          obj.id = item.id;
-          obj.groupType = item.goods_type;
-          obj.goodsPrice = item.goods_activity_price < item.goods_price ? item.goods_activity_price : item.goods_price;
-          _.tableData.push(obj);
+          if (item.goods_state == 1) {
+            let obj = {};
+            obj.shopName = item.goods_name;
+            obj.stock = (item.goods_number-item.goods_pay_number);
+            obj.saleVolume = item.goods_pay_number;
+            obj.goods_group_id = item.goods_group_id;
+            obj.date = item.updated_time;
+            obj.id = item.id;
+            obj.groupType = item.goods_type;
+            obj.goodsPrice = item.goods_activity_price < item.goods_price ? item.goods_activity_price : item.goods_price;
+            _.tableData.push(obj);
+          }
         });
       }
       if(this.activeName === 'soldOut') {
@@ -110,6 +121,26 @@ export default {
             obj.saleVolume = item.goods_pay_number;
             obj.date = item.updated_time;
             obj.id = item.id;
+            obj.goods_group_id = item.goods_group_id;
+            obj.groupType = item.goods_type;
+            obj.goodsPrice = item.goods_activity_price < item.goods_price ? item.goods_activity_price : item.goods_price;
+            _.tableData.push(obj);
+          }
+        });
+      }
+      if(this.activeName === 'offLoading') {
+        let _ = this;
+        val.forEach(item => {
+          if(item.goods_state == 2) {
+            let obj = {};
+            obj.shopName = item.goods_name;
+            obj.stock = (item.goods_number-item.goods_pay_number);
+            obj.saleVolume = item.goods_pay_number;
+            obj.date = item.updated_time;
+            obj.id = item.id;
+            obj.goods_group_id = item.goods_group_id;
+            obj.groupType = item.goods_type;
+            obj.goodsPrice = item.goods_activity_price < item.goods_price ? item.goods_activity_price : item.goods_price;
             _.tableData.push(obj);
           }
         });
@@ -117,11 +148,30 @@ export default {
     }
   },
   methods: {
+    //
+    extensionGoods(id) {
+      return window.location.host+`/goodsH5?goods_id=${id}`;
+    },
     // 表格变更函数
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      console.log(val);
+    },
+    // 下架商品
+    offLoadingGoods() {
+      this.$axios({
+        method: "post",
+        url: "/changeGoodsState",
+        data: this.multipleSelection
+      }).then((res) => {
+        if(res.data.result) {
+          this.$message.success('下架成功');
+          this.getSelectGoods();
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
     }
+    
   }
 }
 </script>

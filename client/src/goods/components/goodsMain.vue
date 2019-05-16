@@ -11,12 +11,20 @@
                 :goods-groups-list="goodsGroupsList" 
                 :table-show-data="tableShowDataInMar" 
                 :resetTalbeData="resetTalbeData" 
-                :selectTalbeData="selectTalbeData"/>
+                :selectTalbeData="selectTalbeData"
+                ref="marketing_table"/>
             </el-tab-pane>
             <el-tab-pane label="已售罄" name="soldOut">
               <main-table active-name="soldOut" 
                 :goods-groups-list="goodsGroupsList" 
                 :table-show-data="tableShowDataInOut" 
+                :resetTalbeData="resetTalbeData"
+                :selectTalbeData="selectTalbeData"/>
+            </el-tab-pane>
+            <el-tab-pane label="已下架" name="offLoading">
+              <main-table active-name="offLoading" 
+                :goods-groups-list="goodsGroupsList" 
+                :table-show-data="tableShowDataInOff" 
                 :resetTalbeData="resetTalbeData"
                 :selectTalbeData="selectTalbeData"/>
             </el-tab-pane>
@@ -52,27 +60,33 @@ export default {
       activeName: 'marketing',
       goodsGroupsList: [],
       tableShowDataInOut: [],
-      tableShowDataInMar: []
+      tableShowDataInMar: [],
+      tableShowDataInOff: []
     }
   },
   mounted() {
     this.resetTalbeData();
+    if(this.$route.params.groupId) {
+      this.$refs.marketing_table.getSelectGoods(this.$route.params.groupId);
+    }
   },
   methods: {
     selectTalbeData(sel, type) {
       const goodsList = sel;
-      // const goodsTagList = this.goodsGroupsList;
-      // for(let o=0;o<goodsList.length;o++) {
-      //   for(let i=0;i<goodsTagList.length;i++) {
-      //     if(goodsList[o].goods_group_id == goodsTagList[i].id) {
-      //       goodsList[o].goods_group_id = goodsTagList[i].group_name;
-      //     }
-      //   }
-      // }
+      const goodsTagList = this.goodsGroupsList;
+      for(let o=0;o<goodsList.length;o++) {
+        for(let i=0;i<goodsTagList.length;i++) {
+          if(goodsList[o].goods_group_id == goodsTagList[i].id) {
+            goodsList[o].goods_group_id = goodsTagList[i].group_name;
+          }
+        }
+      }
       if(type === 'marketing') {
         this.tableShowDataInMar = sel;
       } else if(type === 'soldOut') {
         this.tableShowDataInOut = sel;
+      } else if(type === 'offLoading') {
+        this.tableShowDataInOff = sel;
       }
     },
     resetTalbeData(data, type) {
@@ -96,6 +110,7 @@ export default {
           this.goodsGroupsList = goodsTagList;
           this.tableShowDataInMar = goodsList;
           this.tableShowDataInOut = goodsList;
+          this.tableShowDataInOff = goodsList;
         })
         .catch(err => {
           console.log(err);

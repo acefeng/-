@@ -1,9 +1,52 @@
 const models = require('../../models');
+
+/**
+ * 更新商品状态
+ */
+exports.changeGoodsState = function (data) {
+  return models.Goods.update({
+    goods_state: 2
+  },{
+    where: {
+      id:{
+        $or: data
+      }
+    },
+    raw: true
+  })
+  .then((result) => {
+    return true;
+  }).catch((err) => {
+    console.error(err);
+    return false;
+  })
+};
+
+/**
+ * 通过goods_id查询商品
+ */
+exports.getGoodsMainById = function (goods_id) {
+  return models.Goods.findOne({
+    where: {
+      id: goods_id
+    },
+    raw: true
+  })
+  .then((result) => {
+    return result;
+  }).catch((err) => {
+    console.error(err);
+    return false;
+  })
+};
 /**
  * 查询所有商品列表
  */
-exports.searchAllGoods = function () {
+exports.searchAllGoods = function (user_id) {
   return models.Goods.findAll({
+    where: {
+      user_id
+    },
     raw: true
   })
   .then((result) => {
@@ -57,7 +100,57 @@ exports.searchGoodsTag = function (user_id) {
     return false;
   })
 };
+/**
+ * 根据分组id搜索商品数量
+ */
+exports.countGoodsByGroupId = function (goods_group_id) {
+  return models.Goods.count({
+    where: {
+      goods_group_id
+    },
+    raw: true
+  })
+  .then((result) => {
+    return result;
+  }).catch((err) => {
+    console.error(err);
+    return false;
+  })
+};
+/**
+ * 删除分组
+ */
+exports.deleteGoodsGroup = function (id) {
+  return models.GoodsGroup.destroy({
+    where: {
+      id
+    },
+    raw: true
+  })
+  .then((result) => {
+    return result;
+  }).catch((err) => {
+    console.error(err);
+    return false;
+  })
+};
 
 /**
- * 分组id查询分组内部的商品
+ * 更改商品卖出数量
  */
+exports.updateGoodsPayNum = function (id, payNum) {
+  return models.Goods.update({
+    goods_pay_number: payNum
+  },{
+    where: {
+      id
+    },
+    raw: true
+  })
+  .then((result) => {
+    return true;
+  }).catch((err) => {
+    console.error(err);
+    return false;
+  })
+};

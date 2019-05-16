@@ -14,6 +14,14 @@ const routes = [
     meta: {
       title: '商品页'
     }
+  },
+  {
+    path: '/orderId',
+    component: () => import(/* webpackChunkName:'showOrderId'*/ './components/showOrderId.vue'),
+    name: 'showOrderId',
+    meta: {
+      title: '订单id页'
+    }
   }
 ];
 

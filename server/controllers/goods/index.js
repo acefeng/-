@@ -12,6 +12,31 @@ class goodsIndex extends BaseControllers{
         global: JSON.stringify(ctx.session)
     })
   }
+
+  /**
+   * 删除分组
+   */
+  async postDeleteGoodsGroup(ctx) {
+    const { id } = ctx.request.body;
+    const result = await Goods.deleteGoodsGroup(id);
+    ctx.body = {
+      code: 200,
+      result
+    }
+  }
+  
+  /**
+   * 获取商品分组页主要数据
+   */
+  async postGetGoodsGroupMain(ctx) {
+    const userId = ctx.session.userId;
+    const result = await Goods.getGoodsGroupMain(userId);
+    ctx.body = {
+      code: 200,
+      result
+    }
+  }
+
   /**
    * 增加商品分组
    */
@@ -31,6 +56,7 @@ class goodsIndex extends BaseControllers{
       }
     }
   }
+
   /**
    * 通过限制获取不同种商品数据
    * @param {*} ctx 
@@ -46,7 +72,7 @@ class goodsIndex extends BaseControllers{
       searchByPriceMax,
       searchByGoodsType 
     } = ctx.request.body;
-    await Goods.searchAllGoods().then((data) => {
+    await Goods.searchAllGoods(userId).then((data) => {
       for(let i=0;i<data.length;i++) {
         data[i].updated_time = moment(data[i].updated_time).format('YYYY-MM-DD HH:mm');
       }
@@ -120,9 +146,24 @@ class goodsIndex extends BaseControllers{
         result
       }
     });
-    
-
   }
+
+  /**
+   * 下架商品
+   */
+  async postChangeGoodsState(ctx) {
+    const arr = ctx.request.body;
+    await Goods.changeGoodsState(arr)
+    .then((data) => {
+      ctx.body = {
+        code: 200,
+        result: data
+      }
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
   /**
    * 刷新页面主要数据 查看商品和获取分组
    */
@@ -135,7 +176,7 @@ class goodsIndex extends BaseControllers{
       });
       results.goodsTagList = data;
     });
-    await Goods.searchAllGoods().then((data) => {
+    await Goods.searchAllGoods(userId).then((data) => {
       for(let i=0;i<data.length;i++) {
         data[i].updated_time = moment(data[i].updated_time).format('YYYY-MM-DD HH:mm');
       }
@@ -153,7 +194,7 @@ class goodsIndex extends BaseControllers{
   async postAddGoods(ctx) {
     const { pushGoodsName, pushGoodsType, pushGoodsGroup, pushShopPrice, pushGoodsNum, pushGoodsDelivery, imgURL } = ctx.request.body;
     const userId = ctx.session.userId;  
-    await Goods.addGoods(userId, pushGoodsName, pushGoodsType, pushGoodsGroup, pushShopPrice, pushGoodsNum, pushGoodsDelivery, imgURL);
+    await Goods.addGoods(userId, pushGoodsName, pushGoodsType, pushGoodsGroup, pushShopPrice, pushGoodsNum, pushGoodsDelivery, imgURL, 1);
     await Goods.searchAllGoods().then((data) => {
       for(let i=0;i<data.length;i++) {
         data[i].updated_time = moment(data[i].updated_time).format('YYYY-MM-DD HH:mm');

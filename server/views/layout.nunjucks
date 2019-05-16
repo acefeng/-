@@ -10,6 +10,7 @@
         <script>
             var _global = {{ global | safe }};
         </script>
+        {% block project_global %}{% endblock %}
     </head>
     <body>
         {% block content %}

@@ -58,6 +58,16 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.BIGINT(20),
       allowNull: false,
       field: 'goods_group_id'
+    },
+    goods_state: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false,
+      field: 'goods_state'
+    },
+    goods_name: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      field: 'goods_name'
     }
   }, {
     tableName: 'goods'

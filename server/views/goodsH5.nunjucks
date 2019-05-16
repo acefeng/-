@@ -4,7 +4,12 @@
 {% endblock %}
 {% block project_style %}
 {% endblock %}
-
+{% block project_global %}
+<script>
+    var _globalGoods = {{ globalGoods | safe }};
+    var _globalComment = {{ globalComment | safe }};
+</script>
+{% endblock %}
 {% block project_script %}
     {% if n_env %}
         <script src="//localhost:8080/dist/goodsH5.js"></script>

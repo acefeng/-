@@ -1,22 +1,38 @@
 <template>
   <div class="goods_show">
     <div class="goods_img">
-      <img src="../assets/logo.jpg" alt="">
+      <img :src="goodsImg" alt="">
     </div>
     <div class="goods_title">
-      <div>测试商品二</div>
-      <div>￥ 6.00</div>
+      <div>{{ goodsName }}</div>
+      <div>￥ {{ Math.min(goodsPrice, goodsActivityPrice) }}</div>
       <div>
-        <span>剩余 100</span>
+        <span>剩余 {{ goodsNumber-goodsPayNumber }}</span>
       </div>
     </div>
     <div class="goods_deliver">
       <span>配送方式：</span>
-      <span>快递</span>
+      <span>{{ goodsDelivery }}</span>
     </div>
     <div class="goods_evaluate">
       <span>宝贝评价</span>
-      <span>暂无评价</span>
+      <span>{{commentList.length>0 ? `共有 ${commentList.length} 条评价` : '暂无评价'}}</span>
+    </div>
+    <ul class="goods_comment">
+      <li v-for="(item,index) in commentList" :key="index">
+        <div>{{item.comment_user_name}}：</div>
+        <div>{{item.goods_comment_main}}</div>
+        <div>{{item.created_time}}</div>
+      </li>
+    </ul>
+    <div class="comment_push">
+      <el-input
+        type="textarea"
+        :rows="3"
+        placeholder="请输入内容"
+        v-model="textarea">
+      </el-input>
+       <el-button type="primary" class="comment_btn" @click="pushComment">提交评论</el-button>
     </div>
     <div class="goods_buy_but">
       <div class="this_but" @click.self="disDiv(true)">立即购买</div>
@@ -25,17 +41,21 @@
       <div>
         <div>
           <span>购买数量</span>
-          <span>剩余： 100</span>
-          <el-input-number class="input_num" v-model="num" @change="handleChange" :min="1" :max="100" label="描述文字" size="mini"></el-input-number>
+          <span>剩余： {{ goodsNumber-goodsPayNumber }}</span>
+          <el-input-number class="input_num" v-model="num" :min="1" @change="handleChange" :max="goodsNumber-goodsPayNumber" label="描述文字" size="mini"></el-input-number>
+        </div>
+        <div>
+          <span>价格：</span>
+          <span>{{ orderTruePrice }}</span>
         </div>
         <div>
           <span>收货地址</span>
           <el-input v-model="address" placeholder="请输入" size="mini" class="order_address"></el-input>
         </div>
-        <div class="this_but">下一步</div>
+        <div class="this_but" @click="pushOrder">下一步</div>
       </div>
     </div>
-    <check-login :check-login="checkLogin" :disDiv="disDiv"/>
+    <check-login :check-login="checkLogin" :disDiv="disDiv" :disLogin="disLogin"/>
   </div>
 </template>
 
@@ -50,16 +70,68 @@ export default {
       poper: false,
       num: 1,
       address: '',
-      checkLogin: false
+      checkLogin: false,
+      goodsImg: '',
+      goodsActivityPrice: 0,
+      goodsPrice: 0,
+      orderTruePrice: 0,
+      orderGoodsNum: 0,
+      goodsName: '',
+      commentList: [],
+      textarea: ''
     }
   },
+  created() {
+    this.goodsImg = _globalGoods.goods_img;
+    this.goodsActivityPrice = _globalGoods.goods_activity_price;
+    this.goodsPrice = _globalGoods.goods_price;
+    this.goodsDelivery = _globalGoods.goods_delivery;
+    this.goodsNumber = _globalGoods.goods_number;
+    this.goodsPayNumber = _globalGoods.goods_pay_number;
+    this.goodsName = _globalGoods.goods_name;
+    this.commentList = _globalComment;
+  },
   methods: {
-    handleChange(value) {
-      console.log(value);
+    handleChange(val) {
+      this.orderTruePrice = val * this.goodsPrice;
+      this.orderGoodsNum = val;
+    },
+    pushComment() {
+      console.log(this.textarea);
+    },
+    pushOrder() {
+      this.$axios({
+        method: "post",
+        url: "/pushOrder",
+        data: {
+          orderGoodsNum: this.orderGoodsNum,
+          orderTruePrice: this.orderTruePrice,
+          orderGoodsId: _globalGoods.id,
+          orderGoodsName: _globalGoods.goods_name,
+          customerId: _global.userId,
+          shopkeeperId: _globalGoods.user_id,
+          deliveryType: _globalGoods.goods_delivery,
+          goodsPrice: _globalGoods.goods_price,
+          orderAddress: this.address,
+          customerName: _global.userName
+        }
+      }).then((res) => {
+        if(res.data.result) {
+          this.$router.push({ name: 'showOrderId', params: { id: res.data.result }});
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     disDiv(isShow) {
-      this.checkLogin = isShow; // 登录弹窗
-      // this.poper = isShow; //购买页面
+      if(!window._global) {
+        this.checkLogin = true;
+      } else {
+        this.poper = isShow;
+      }
+    },
+    disLogin() {
+      this.checkLogin = false;
     }
   }
 }
@@ -70,6 +142,7 @@ body {
   background-color: #f8f8f8;
 }
 .goods_show {
+  margin-bottom: 100px;
   .goods_img {
     height: 414px;
     display: flex;
@@ -119,7 +192,6 @@ body {
     margin-top: 10px;
     line-height: 24px;
     overflow: hidden;
-    margin-bottom: 200px;
 
     span {
       font-size: 14px;
@@ -128,6 +200,47 @@ body {
 
     &>span:nth-child(2) {
       float: right;
+    }
+  }
+
+  .goods_comment {
+    list-style: none;
+    margin-top: 10px;
+    line-height: 24px;
+    overflow: hidden;
+    color: #343452;
+    font-size: 14px;
+    padding: 10px;
+    background: white;
+
+    li {
+      margin-bottom: 10px;  
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f8f8f8;
+
+      &>div:nth-child(1) {
+        margin-bottom: 5px;
+      }
+      &>div:nth-child(2) {
+        font-size: 15px;
+      }
+      &>div:nth-child(3) {
+        text-align: right;
+        margin-top: 5px;
+        color: #909399;
+      }
+    }
+  }
+
+  .comment_push {
+    padding: 10px;
+    background: white;
+    margin-top: 10px;
+
+    .comment_btn {
+      margin: 0 auto;
+      margin-top: 10px;
+      display: block;
     }
   }
 
@@ -167,7 +280,7 @@ body {
       background: white;
       overflow: hidden;
 
-      &>div:nth-child(1) {
+      &>div:nth-child(1), &>div:nth-child(2) {
         padding: 12px 15px;
         height: 30px;
         line-height: 30px;
@@ -178,7 +291,7 @@ body {
         }
       }
 
-      &>div:nth-child(2) {
+      &>div:nth-child(3) {
         padding: 12px 15px;
         height: 30px;
         line-height: 30px;

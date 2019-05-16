@@ -11,25 +11,27 @@
             :data="tableData"
             style="width: 100%">
             <el-table-column
-              prop="date"
               label="分组名称"
               width="180">
+              <template slot-scope="scope">
+                <span class="groupNameStyle" @click="changeUrlToGoods(scope.row.id)">{{ scope.row.group_name }}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="商品数量"
+              prop="countGoods"
+              label="商品种类数目"
               width="180">
             </el-table-column>
             <el-table-column
-              prop="address"
+              prop="created_time"
               label="创建时间">
             </el-table-column>
             <el-table-column
               label="操作"
               align="right"
               header-align="right">
-              <template>
-                <span>删除</span>
+              <template slot-scope="scope">
+                <span @click="deleteGoodsGroup(scope.row.id, scope.row.countGoods)" class="delete_but">删除</span>
               </template>
             </el-table-column>
           </el-table>
@@ -70,30 +72,56 @@ export default {
   },
   data () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      tableData: [],
       dialogVisible: false,
       groupName: ''
     }
   },
   mounted() {
+    this.getGroupListMain();
   },
   methods: {
+    getGroupListMain() {
+      this.$axios({
+        method: "post",
+        url: "/getGoodsGroupMain",
+      }).then((res) => {
+        this.tableData = res.data.result;
+        console.log(res);
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    deleteGoodsGroup(id, countGoods) {
+      if(countGoods > 0) {
+        this.$message({
+          type: 'info',
+          message: '删除失败，分组内还有商品。'
+        });
+        return;
+      }
+      this.$axios({
+        method: "post",
+        url: "/deleteGoodsGroup",
+        data: {
+          id
+        }
+      }).then((res) => {
+        if(res.data.result) {
+          this.getGroupListMain();
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          });
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    // 更改路由到指定位置
+    changeUrlToGoods(groupId) {
+      this.$router.push({ name: 'goodsMain', params: { groupId }});
+    },
     dialogAdd() {
       this.$axios({
         method: 'post',
@@ -103,6 +131,7 @@ export default {
         }
       }).then((res) => {
         if(res.data.result) {
+          this.getGroupListMain();
           this.$message({
             type: 'success',
             message: '添加成功'
@@ -145,6 +174,16 @@ export default {
         padding: 10px;
         box-sizing: border-box;
         background: white;
+
+        .delete_but {
+          color: #999;
+          cursor: pointer;
+        }
+
+        .groupNameStyle:hover{
+          color: #999;
+          cursor: pointer;
+        }
       }
     }
   }

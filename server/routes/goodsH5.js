@@ -4,5 +4,17 @@ module.exports = [
       '/goodsH5',
       '../controllers/goodsH5',
       'getIndex'
-  ]
+  ],
+  [
+    'POST',
+    '/loginH5',
+    '../controllers/goodsH5',
+    'postLoginH5'
+  ],
+  [
+    'POST',
+    '/pushOrder',
+    '../controllers/goodsH5',
+    'postPushOrder'
+  ],
 ];

@@ -63,7 +63,10 @@
         <el-button @click="resetBut">清空筛选条件</el-button>
       </div>
     </div>
-    <main-table-list :table-show-data="tableShowData" :active-name="activeName"/>
+    <main-table-list 
+      :table-show-data="tableShowData" 
+      :active-name="activeName"
+      :getSelectGoods="getSelectGoods"/>
     
     <el-dialog title="商品发布" :visible.sync="pushGoodsDialog" width="30%" :before-close="handleClose">
       <table>
@@ -208,7 +211,10 @@ export default {
     };
   },
   methods: {
-    getSelectGoods() {
+    getSelectGoods(outGoodsGroups) {
+      if(outGoodsGroups) {
+        this.searchByGoodsGroups = outGoodsGroups;
+      }
       let data = {};
       this.searchByNameOrId !== "" ? data.searchByNameOrId=this.searchByNameOrId : null;
       this.searchBySaleNumMax !== "" ? data.searchBySaleNumMax=this.searchBySaleNumMax : null;

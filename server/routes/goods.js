@@ -29,4 +29,22 @@ module.exports = [
     '../controllers/goods',
     'postSelectSearchGoods'
   ],
+  [
+    'POST',
+    '/changeGoodsState',
+    '../controllers/goods',
+    'postChangeGoodsState'
+  ],
+  [
+    'POST',
+    '/getGoodsGroupMain',
+    '../controllers/goods',
+    'postGetGoodsGroupMain'
+  ],
+  [
+    'POST',
+    '/deleteGoodsGroup',
+    '../controllers/goods',
+    'postDeleteGoodsGroup'
+  ],
 ];
