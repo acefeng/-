@@ -12,6 +12,7 @@ exports.getGoodsMainById = function (goods_id) {
  */
 exports.changeGoodsState = function (arr) {
   let data = [];
+  console.log(1231231, arr);
   arr.forEach(item => {
     data.push(item.id);
   });

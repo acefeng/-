@@ -32,7 +32,21 @@
         placeholder="请输入内容"
         v-model="textarea">
       </el-input>
-       <el-button type="primary" class="comment_btn" @click="pushComment">提交评论</el-button>
+      <el-popover
+        placement="top"
+        title="提示"
+        width="200"
+        trigger="manual"
+        :content="commentContent"
+        v-model="visible">
+        <el-button 
+          type="primary" 
+          slot="reference" 
+          @click="pushComment" 
+          class="comment_btn">
+          提交评论
+        </el-button>
+      </el-popover>
     </div>
     <div class="goods_buy_but">
       <div class="this_but" @click.self="disDiv(true)">立即购买</div>
@@ -78,7 +92,9 @@ export default {
       orderGoodsNum: 0,
       goodsName: '',
       commentList: [],
-      textarea: ''
+      textarea: '',
+      visible: false,
+      commentContent: ''
     }
   },
   created() {
@@ -97,7 +113,35 @@ export default {
       this.orderGoodsNum = val;
     },
     pushComment() {
-      console.log(this.textarea);
+      if(this.textarea === '') {
+        this.showPushCommentAlert('评论不能为空');
+        return;
+      }
+      this.$axios({
+        method: "post",
+        url: "/pushComment",
+        data: {
+          goodsId: _globalGoods.id,
+          textarea: this.textarea
+        }
+      }).then(res => {
+        if(res.data.code === 200) {
+          this.showPushCommentAlert(res.data.result);
+          if(res.data.result === '评论添加成功') {
+            _globalComment = res.data.data;
+            this.commentList = _globalComment;
+          }
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    showPushCommentAlert(str) {
+      this.visible = !this.visible;
+      this.commentContent = str;
+      setTimeout(() => {
+        this.visible = !this.visible;
+      }, 2000);
     },
     pushOrder() {
       this.$axios({

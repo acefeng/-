@@ -20,26 +20,21 @@
           <div>上次消费时间：</div>
           <div>
             <el-date-picker
-              v-model="customerPayTimeMin"
+              v-model="orderTime"
+              type="daterange"
               align="right"
-              type="date"
-              placeholder="开始日期"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
               size="mini"
-              :picker-options="pickerOptions">
-            </el-date-picker>
-            <span>至</span>
-            <el-date-picker
-              v-model="customerPayTimeMax"
-              align="right"
-              type="date"
-              placeholder="结束日期"
-              size="mini"
-              :picker-options="pickerOptions">
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']">
             </el-date-picker>
           </div>
         </div>
         <div class="search_but">
-          <el-button type="primary" size="mini">筛选</el-button>
+          <el-button type="primary" size="mini" @click="searchSelectCustomer">筛选</el-button>
         </div>
       </div>
       <div class="">
@@ -50,21 +45,21 @@
             label="姓名"
             width="200">
             <template slot-scope="scope">
-              <span>{{ scope.row.customerName }}</span>
+              <span>{{ scope.row.customer_name }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="phoneNum"
+            prop="phone"
             label="手机号"
             width="220">
           </el-table-column>
           <el-table-column
-            prop="payTime"
+            prop="updated_time"
             label="上次购买时间"
             width="220">
           </el-table-column>
           <el-table-column
-            prop="truePay"
+            prop="goods_true_price"
             label="花费金额"
             align="right">
           </el-table-column>
@@ -89,44 +84,42 @@ export default {
         value: '姓名',
         label: '姓名'
       }],
-      tableData: [{
-        phoneNum: '19827462345',
-        customerName: '王小虎',
-        payTime: '2018-09-02',
-        truePay: '1.00'
-      }],
+      tableData: [],
       customerSearch: '',
       customerSearchMain: '',
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now();
-        },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date());
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24);
-            picker.$emit('pick', date);
-          }
-        }, {
-          text: '一周前',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', date);
-          }
-        }]
-      },
-      customerPayTimeMin: '',
-      customerPayTimeMax: ''
+      orderTime: ''
     }
   },
+  created () {
+    this.searchCustomer();
+  },
   methods: {
+    searchCustomer() {
+      this.$axios({
+        method: "post",
+        url: "/getCustomerList",
+      }).then((res) => {
+        this.tableData = res.data.result;
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    searchSelectCustomer() {
+      let data = {
+        orderTime: this.orderTime !== '' ? this.orderTime : null,
+        customerName: this.customerSearch === '姓名' ? this.customerSearchMain : '',
+        customerPhone: this.customerSearch === '手机号' ? this.customerSearchMain : '',
+      };
+      this.$axios({
+        method: "post",
+        url: "/getSelectCustomerList",
+        data
+      }).then((res) => {
+        this.tableData = res.data.result;
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
   }
 }
 </script>

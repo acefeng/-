@@ -37,8 +37,8 @@ export default {
         this.navUrlList = ['/goods#/', '/goods#/goods_group'];
       } else if(next === 3) {
         this.navTitle = '订单管理';
-        this.navList = ['订单查询', '批量发货', '评价管理', '退款订单'];
-        this.navUrlList = ['/order#/', '/order#/orderDeliver', '/order#/orderEvaluate', '/order#/orderRefund'];
+        this.navList = ['订单查询', '批量发货', '评价管理'];
+        this.navUrlList = ['/order#/', '/order#/orderDeliver', '/order#/orderEvaluate'];
       } else if(next === 4) {
         this.navTitle = '客户管理';
         this.navList = ['客户查询', '标签管理', '等级管理'];

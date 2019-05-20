@@ -77,6 +77,35 @@ class goodsH5Index {
       }
     }
   }
+
+  /**
+   * 添加新评论
+   */
+  async postPushComment(ctx) {
+    const { goodsId, textarea } = ctx.request.body
+    const { userId=null, userName=null } = ctx.session;
+    if (!userId) {
+      ctx.body={
+        code: 200,
+        result: '请登录后评论(点击立即购买可登录)'
+      }
+      return;
+    }
+    const canPush = await Comment.checkPushComment(goodsId, userId);
+    if(canPush) {
+      const data = await Comment.addComment(goodsId, userId, userName, textarea)
+      ctx.body={
+        code: 200,
+        result: '评论添加成功',
+        data
+      }
+    } else {
+      ctx.body={
+        code: 200,
+        result: '请购买后评论'
+      }
+    }
+  }
 }
 
 module.exports = goodsH5Index;

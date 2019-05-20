@@ -17,4 +17,10 @@ module.exports = [
     '../controllers/goodsH5',
     'postPushOrder'
   ],
+  [
+    'POST',
+    '/pushComment',
+    '../controllers/goodsH5',
+    'postPushComment'
+  ],
 ];

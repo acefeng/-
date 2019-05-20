@@ -41,6 +41,9 @@ exports.searchAllOrder = function (user_id) {
     where: {
       shopkeeper_id: user_id
     },
+    order: [
+      ["updated_time", "DESC"]
+    ],
     raw: true
   })
   .then((result) => {

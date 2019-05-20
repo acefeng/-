@@ -3,41 +3,30 @@
     <div class="order_evaluate_table_main">
       <div class="order_evaluate_list">
         <div class="evaluate_list">
-          <div>订单编号：</div>
-          <div>
-            <el-input v-model="orderNum" placeholder="请输入内容" size="mini"></el-input>
-          </div>
-        </div>
-        <div class="evaluate_list">
           <div>评价时间：</div>
           <div>
             <el-date-picker
-              v-model="orderTimeMin"
+              v-model="orderTime"
+              type="daterange"
               align="right"
-              type="date"
-              placeholder="开始日期"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
               size="mini"
-              :picker-options="pickerOptions">
-            </el-date-picker>
-            <span>至</span>
-            <el-date-picker
-              v-model="orderTimeMax"
-              align="right"
-              type="date"
-              placeholder="结束日期"
-              size="mini"
-              :picker-options="pickerOptions">
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']">
             </el-date-picker>
           </div>
         </div>
         <div class="evaluate_list">
           <div>商品名称：</div>
           <div>
-            <el-input v-model="shopNameSearch" placeholder="请输入内容" size="mini"></el-input>
+            <el-input v-model="goodsNameSearch" placeholder="请输入内容" size="mini"></el-input>
           </div>
         </div>
         <div class="evaluate_but">
-          <el-button type="primary" size="mini">筛选</el-button>
+          <el-button type="primary" size="mini" @click="getOrderCommentSelectList">筛选</el-button>
         </div>
       </div>
       <div class="">
@@ -46,36 +35,31 @@
           style="width: 100%">
           <el-table-column
             label="商品"
-            width="170">
+            width="160">
             <template slot-scope="scope">
-              <span>{{ scope.row.shopName }}</span>
+              <span>{{ scope.row.goodsName }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="orderNum"
-            label="订单编号"
+            prop="created_time"
+            label="评价时间"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="goodsEvaluate"
+            prop="goods_comment_main"
             label="商品评价"
-            width="300">
+            width="400">
           </el-table-column>
           <el-table-column
-            prop="customer"
+            prop="comment_user_name"
             label="收货人"
-            width="100">
-          </el-table-column>
-          <el-table-column
-            prop="truePay"
-            label="实付金额(元)"
             width="100">
           </el-table-column>
           <el-table-column
             label="操作"
             align="right">
-            <template>
-              <el-button type="primary" size="mini">删除</el-button>
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="deleteComment(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -92,45 +76,56 @@ export default {
   },
   data () {
     return {
-      tableData: [{
-        truePay: '1.00',
-        customer: '王小虎',
-        goodsEvaluate: '上门取货真的很忙',
-        shopName: '测试商品三',
-        orderNum: '1289378912789372189'
-      }],
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now();
-        },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date());
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24);
-            picker.$emit('pick', date);
-          }
-        }, {
-          text: '一周前',
-          onClick(picker) {
-            const date = new Date();
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', date);
-          }
-        }]
-      },
-      orderTimeMin: '',
-      orderTimeMax: '',
-      orderNum: '',
-      shopNameSearch: ''
+      tableData: [],
+      orderTime: '',
+      goodsNameSearch: ''
     }
   },
+  created() {
+    this.getOrderCommentAllList();
+  },
   methods: {
+    deleteComment(commentId) {
+      this.$axios({
+        method: 'post',
+        url: '/deleteComment',
+        data: {
+          commentId
+        }
+      }).then((res) => {
+        if(res.data.result) {
+          this.getOrderCommentSelectList();          
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    getOrderCommentSelectList() {
+      let data = {
+        orderTime: this.orderTime === '' ? null : this.orderTime,
+        goodsNameSearch: this.goodsNameSearch === '' ? null : this.goodsNameSearch,
+      };
+      this.$axios({
+        method: 'post',
+        url: '/getOrderCommentSelectList',
+        data
+      }).then((res) => {
+        this.tableData = res.data.result;
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    getOrderCommentAllList() {
+      this.$axios({
+        method: 'post',
+        url: '/getOrderCommentAllList',
+      }).then((res) => {
+        console.log(res.data.result);
+        this.tableData = res.data.result;
+      }).catch(err => {
+        console.log(err);
+      })
+    }
   }
 }
 </script>

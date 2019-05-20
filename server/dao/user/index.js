@@ -28,3 +28,21 @@ exports.loginUser = function (login_name) {
     console.error(err);
   })
 };
+
+/**
+ * 通过user_id查找用户
+ */
+exports.searchUserById = function (id) {
+  return models.User.findOne({
+    where: {
+      id
+    },
+    raw: true
+  })
+  .then((result) => {
+    return result;
+  }).catch((err) => {
+    return false;
+    console.error(err);
+  })
+};

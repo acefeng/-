@@ -1,5 +1,7 @@
 const order = require('../../dao/order');
 const goods = require('../../dao/goods');
+const comment = require('../../dao/comment');
+const moment = require('moment');
 
 /**
  * 更改订单状态
@@ -14,6 +16,36 @@ exports.changeOrderState = function (order_id) {
  */
 exports.searchAllOrder = function (user_id) {
   return order.searchAllOrder(user_id);
+};
+
+/**
+ * 搜索所有订单评论
+ */
+exports.searchAllOrderComment = async function (user_id) {
+  let goodsDate = [];
+  await goods.searchAllGoods(user_id).then(data => {
+    data.forEach(item => {
+      goodsDate.push({
+        goodsId: item.id,
+        goodsName: item.goods_name
+      })
+    });
+  }).catch(err => {
+    console.log(err);
+  });
+  return await Promise.all(goodsDate.map(async item => {
+    return await comment.getGoodsComment(item.goodsId).then(comList => {
+      if(comList.length > 0) {
+        comList.forEach(commentMain => {
+          commentMain.created_time = moment(commentMain.created_time).format('YYYY-MM-DD HH:mm');
+        })
+      }
+      item.commentList = comList;
+      return item;
+    }).catch(err => {
+      console.log(err);
+    })
+  }));
 };
 
 

@@ -1,8 +1,13 @@
 const BaseControllers = require('../base/index');
 const n_env = process.env.NODE_ENV == 'development';
 const order = require('../../services/order');
+const comment = require('../../services/comment');
 
 class orderIndex extends BaseControllers{
+  constructor() {
+    super();
+  }
+
   async getIndex(ctx){
     await super.isLogin(ctx);
     await ctx.render('order', {
@@ -102,6 +107,73 @@ class orderIndex extends BaseControllers{
       ctx.body = {
         code: 200,
         result: false
+      }
+    }
+  }
+
+  async getOrderCommentAllList(ctx) {
+    const user_id = ctx.session.userId;
+    const result = await order.searchAllOrderComment(user_id);
+    let data = [];
+    result.forEach(item => {
+      if(item.commentList.length>0) {
+        item.commentList.forEach(commentMain => {
+          commentMain.goodsName = item.goodsName;
+          data.push(commentMain);
+        })
+      }
+    });
+    ctx.body = {
+      code: 200,
+      result: data
+    }
+  }
+
+  async getOrderCommentSelectList(ctx) {
+    const user_id = ctx.session.userId;
+    const { orderTime, goodsNameSearch } = ctx.request.body;
+    const result = await order.searchAllOrderComment(user_id);
+    let data = [];
+    result.forEach(item => {
+      if(item.commentList.length>0) {
+        item.commentList.forEach(commentMain => {
+          commentMain.goodsName = item.goodsName;
+          data.push(commentMain);
+        })
+      }
+    });
+    if(goodsNameSearch) {
+      let arr = [];
+      const reg = new RegExp(goodsNameSearch);
+      for(let i=0;i<data.length;i++) {
+        if(reg.test(data[i].goodsName)) {
+          arr.push(data[i]); 
+        }
+      }
+      data = arr;
+    }
+    if(orderTime) {
+      let arr = [];
+      data.forEach(item => {
+        if(new Date(orderTime[0]) < new Date(item.created_time) && new Date(item.created_time) < new Date(orderTime[1])) {
+          arr.push(item);
+        }
+      });
+      data = arr;
+    }
+    ctx.body = {
+      code: 200,
+      result: data
+    }
+  }
+
+  async getDeleteComment(ctx) {
+    const { commentId } = ctx.request.body;
+    const result = await comment.deleteComment(commentId);
+    if(result) {
+      ctx.body = {
+        code: 200,
+        result
       }
     }
   }

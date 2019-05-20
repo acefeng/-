@@ -23,5 +23,24 @@ module.exports = [
     '../controllers/order',
     'getChangeOrderState'
   ],
+  [
+    'POST',
+    '/getOrderCommentAllList',
+    '../controllers/order',
+    'getOrderCommentAllList'
+  ],
+  [
+    'POST',
+    '/getOrderCommentSelectList',
+    '../controllers/order',
+    'getOrderCommentSelectList'
+  ],
+  [
+    'POST',
+    '/deleteComment',
+    '../controllers/order',
+    'getDeleteComment'
+  ],
+  
   
 ];
