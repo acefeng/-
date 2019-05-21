@@ -4,5 +4,11 @@ module.exports = [
       '/data',
       '../controllers/data',
       'getIndex'
-  ]
+  ],
+  [
+    'POST',
+    '/getDataSummary',
+    '../controllers/data',
+    'getDataSummary'
+  ],
 ];

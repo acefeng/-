@@ -154,3 +154,47 @@ exports.updateGoodsPayNum = function (id, payNum) {
     return false;
   })
 };
+
+/**
+ * 查询商品的浏览次数
+ */
+exports.searchGoodsShowNum = function (goods_id) {
+  return models.GoodsShowNumber.findCreateFind({
+    where: {
+      goods_id
+    },
+    defaults: {
+      id: 0,
+      goods_id,
+      goods_show_num: 1
+    },
+    raw: true
+  })
+  .then((result) => {
+    return result;
+  }).catch((err) => {
+    console.error(err);
+    return false;
+  })
+};
+
+/**
+ * 更改商品的浏览次数
+ */
+exports.addGoodsShowNum = function (goods_id, goods_show_num) {
+  return models.GoodsShowNumber.update({
+    goods_show_num: goods_show_num - 0 +1 
+  },{
+    where: {
+      goods_id
+    },
+    raw: true
+  })
+  .then((result) => {
+    return result;
+  }).catch((err) => {
+    console.error(err);
+    return false;
+  })
+};
+

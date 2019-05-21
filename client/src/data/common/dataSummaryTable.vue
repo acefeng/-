@@ -44,13 +44,13 @@
         <span>销售额</span>
       </div>
       <div class="data_order_num_bac">
-        <canves-chart :can_width="ctx.can_width" :can_height="ctx.can_height" :y_num="ctx.y_num" :x_xnum="ctx.x_xnum"/>
+        <canves-chart :can_width="salesVolume.can_width" :can_height="salesVolume.can_height" :y_num="salesVolume.y_num" :x_xnum="salesVolume.x_xnum"/>
       </div>
       <div class="data_order_num_main">
         <ul>
           <li>
             <div>总销售额</div>
-            <div>0</div>
+            <div>￥ {{ salesVolumeNum }}</div>
             <div>昨日全天：0</div>
           </li>
         </ul>
@@ -75,12 +75,35 @@ export default {
         can_height: 300,
         y_num: [0, 10, 20, 30, 40],
         x_xnum: [['2019-5-10', 12], ['2019-5-11', 15], ['2019-5-12', 30], ['2019-5-13', 35]]
-      }
+      },
+      salesVolume: {
+        can_width: 500,
+        can_height: 300,
+        y_num: [0, 10, 20, 30, 40],
+        x_xnum: [['2019-5-10', 12], ['2019-5-11', 15], ['2019-5-12', 30], ['2019-5-13', 35]]
+      },
+      salesVolumeNum: 0,
+      tomSalesVolumeNum: 0,
+      goods: [],
+      order: []
     }
+  },
+  created() {
+    this.addData();
   },
   methods: {
     changeIs() {
       // this.$set(this.ctx, 'y_num', [0, 10, 20, 30, 40, 60, 80]);
+    },
+    addData() {
+      this.$axios({
+        method: "post",
+        url: "/getDataSummary",
+      }).then((res) => {
+        console.log(res);
+      }).catch((err) => {
+        console.log(err);
+      })
     }
   }
 }

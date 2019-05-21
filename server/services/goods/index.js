@@ -86,3 +86,20 @@ exports.getGoodsGroupMain = async function (user_id) {
 exports.deleteGoodsGroup = async function (id) {
   return await goods.deleteGoodsGroup(id);
 }
+
+/**
+ * 增加商品的浏览次数
+ */
+exports.addGoodsShowNum = async function (goods_id) {
+  await goods.searchGoodsShowNum(goods_id).then(async data => {
+    if (data[1]) {
+      return true;
+    } else {
+      const { goods_id, goods_show_num } = data[0];
+      const result = await goods.addGoodsShowNum(goods_id, goods_show_num);
+      return result;
+    }
+  }).catch(err => {
+    console.log(err);
+  });
+}
