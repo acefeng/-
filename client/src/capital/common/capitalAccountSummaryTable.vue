@@ -7,7 +7,7 @@
       <div class="capital_account_num_main">
         <div>可用店铺余额(元)</div>
         <div>
-          <span>0.00</span>
+          <span>{{ orderMoney }}</span>
           <el-button type="primary" class="button_recharge" size="mini">充值</el-button>
           <el-button size="mini">提现</el-button>
         </div>
@@ -18,21 +18,26 @@
 
 <script>
 export default {
-  components: {
-  },
-  props: {
-
-  },
   data () {
     return {
-      dataSection:''
+      orderMoney: 0,
     }
   },
-  watch:{
-    value1(next, pre){
-    }
+  created () {
+    this.getData();
   },
   methods: {
+    getData() {
+      this.$axios({
+        method: "post",
+        url: "/getDataTradeSummary",
+      }).then((res) => {
+        const data = res.data.result;
+        this.orderMoney = data.orderMoney;
+      }).catch(err => {
+        console.log(err);
+      })
+    }
   }
 }
 </script>

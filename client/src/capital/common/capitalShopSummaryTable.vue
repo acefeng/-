@@ -7,7 +7,7 @@
       <div class="capital_shop_num_main">
         <div>可用店铺余额(元)</div>
         <div>
-          <span>0.00</span>
+          <span>{{money}}</span>
           <el-button type="primary" class="button_recharge" size="mini">充值</el-button>
           <el-button size="mini">提现</el-button>
         </div>
@@ -20,27 +20,27 @@
           :data="tableData"
           style="width: 100%">
           <el-table-column
-            prop="date"
+            prop="updated_time"
             label="时间"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="goods_name"
             label="名称"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="orderId"
+            prop="id"
             label="订单号"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="price"
+            prop="goods_true_price"
             label="金额"
             width="180">
           </el-table-column>
           <el-table-column
-            prop="customer"
+            prop="customer_name"
             label="对方">
           </el-table-column>
         </el-table>
@@ -58,38 +58,30 @@ export default {
   },
   data () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '测试商品aaa',
-        orderId: '12938912731298',
-        price: '100',
-        customer: '王小虎'
-      }, {
-        date: '2016-05-02',
-        name: '测试商品aaa',
-        orderId: '12938912731298',
-        price: '100',
-        customer: '王小虎'
-      }, {
-        date: '2016-05-02',
-        name: '测试商品aaa',
-        orderId: '12938912731298',
-        price: '100',
-        customer: '王小虎'
-      }, {
-        date: '2016-05-02',
-        name: '测试商品aaa',
-        orderId: '12938912731298',
-        price: '100',
-        customer: '王小虎'
-      }]
+      tableData: [],
+      money: 0,
     }
   },
   watch:{
     value1(next, pre){
     }
   },
+  created() {
+    this.getData();
+  },
   methods: {
+    getData() {
+      this.$axios({
+        method: "post",
+        url: "/getCapitalShopData",
+      }).then((res) => {
+        const data = res.data.result;
+        this.tableData = data.arrList;
+        this.money = data.sumMoney;
+      }).catch(err => {
+        console.log(err);
+      })
+    }
   }
 }
 </script>

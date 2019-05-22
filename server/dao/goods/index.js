@@ -158,7 +158,7 @@ exports.updateGoodsPayNum = function (id, payNum) {
 /**
  * 查询商品的浏览次数
  */
-exports.searchGoodsShowNum = function (goods_id) {
+exports.searchGoodsShowNum = function (goods_id, user_id) {
   return models.GoodsShowNumber.findCreateFind({
     where: {
       goods_id
@@ -166,7 +166,8 @@ exports.searchGoodsShowNum = function (goods_id) {
     defaults: {
       id: 0,
       goods_id,
-      goods_show_num: 1
+      goods_show_num: 1,
+      goods_user_id: user_id
     },
     raw: true
   })
@@ -198,3 +199,21 @@ exports.addGoodsShowNum = function (goods_id, goods_show_num) {
   })
 };
 
+
+/**
+ * 查看商品浏览次数表
+ */
+exports.getGoodsShowNum = function (user_id) {
+  return models.GoodsShowNumber.findAll({
+    where: {
+      goods_user_id: user_id
+    },
+    raw: true
+  })
+  .then((result) => {
+    return result;
+  }).catch((err) => {
+    console.error(err);
+    return false;
+  })
+};

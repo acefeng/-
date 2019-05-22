@@ -45,8 +45,8 @@ export default {
         this.navUrlList = ['/customer#/', '/customer#/customerTag', '/customer#/customerLevel'];
       } else if(next === 5) {
         this.navTitle = '数据管理';
-        this.navList = ['数据概览', '商品概览', '交易概览', '客户概览'];
-        this.navUrlList = ['/data#/', '/data#/goodsSummary', '/data#/tradeSummary', '/data#/customerSummary'];
+        this.navList = ['数据概览', '商品概览', '交易概览'];
+        this.navUrlList = ['/data#/', '/data#/goodsSummary', '/data#/tradeSummary'];
       } else if(next === 6) {
         this.navTitle = '资产管理';
         this.navList = ['账户总揽', '店铺余额'];

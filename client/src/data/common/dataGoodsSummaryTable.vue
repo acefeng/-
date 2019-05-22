@@ -9,26 +9,18 @@
           <li>商品概况</li>
           <li>
             <div>在架商品数</div>
-            <div>4</div>
+            <div>{{ haveGoodsNum }}</div>
           </li>
           <li>
             <div>被访问商品数</div>
-            <div>0</div>
+            <div>{{ showedGoodsKindsNum }}</div>
           </li>
         </ul>
         <ul>
           <li>商品流量</li>
           <li>
             <div>商品浏览量</div>
-            <div>0</div>
-          </li>
-          <li>
-            <div>商品曝光量</div>
-            <div>0</div>
-          </li>
-          <li>
-            <div>商品访客数</div>
-            <div>0</div>
+            <div>{{ showGoodsNum }}</div>
           </li>
         </ul>
       </div>
@@ -45,10 +37,27 @@ export default {
   },
   data () {
     return {
+      showedGoodsKindsNum: 0, 
+      haveGoodsNum: 0, 
+      showGoodsNum: 0
     }
   },
+  created () {
+    this.getData()
+  },
   methods: {
-
+    getData() {
+       this.$axios({
+        method: "post",
+        url: "/getDataGoodsSummary",
+      }).then((res) => {
+        this.showedGoodsKindsNum = res.data.result.showedGoodsKindsNum;
+        this.haveGoodsNum = res.data.result.haveGoodsNum;
+        this.showGoodsNum = res.data.result.showGoodsNum;
+      }).catch(err => {
+        console.log(err);
+      })
+    }
   }
 }
 </script>

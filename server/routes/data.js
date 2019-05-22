@@ -11,4 +11,16 @@ module.exports = [
     '../controllers/data',
     'getDataSummary'
   ],
+  [
+    'POST',
+    '/getDataGoodsSummary',
+    '../controllers/data',
+    'getDataGoodsSummary'
+  ],
+  [
+    'POST',
+    '/getDataTradeSummary',
+    '../controllers/data',
+    'getDataTradeSummary'
+  ],
 ];

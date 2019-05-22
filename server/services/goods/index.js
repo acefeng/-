@@ -90,8 +90,8 @@ exports.deleteGoodsGroup = async function (id) {
 /**
  * 增加商品的浏览次数
  */
-exports.addGoodsShowNum = async function (goods_id) {
-  await goods.searchGoodsShowNum(goods_id).then(async data => {
+exports.addGoodsShowNum = async function (goods_id, user_id) {
+  await goods.searchGoodsShowNum(goods_id, user_id).then(async data => {
     if (data[1]) {
       return true;
     } else {
@@ -102,4 +102,11 @@ exports.addGoodsShowNum = async function (goods_id) {
   }).catch(err => {
     console.log(err);
   });
+}
+
+/**
+ * 查看所有商品的浏览次数表
+ */
+exports.getGoodsShowNum = function (user_id) {
+  return goods.getGoodsShowNum(user_id);
 }

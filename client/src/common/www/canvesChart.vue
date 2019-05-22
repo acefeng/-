@@ -118,7 +118,7 @@ export default {
       for (let i=0;i<x_length;i++) {
         const y_index = parseInt((this.can_height-30)*(1-(this.x_xnum[i][1]/(this.y_num[y_length-1]-this.y_num[0]))));
         ctx.beginPath();
-        ctx.fillStyle='#566a80';
+        ctx.fillStyle='rgb(255, 120, 52)';
         ctx.arc(30+x_space*(i+1),y_index,3,0,2*Math.PI);
         ctx.fill();
         ctx.font="12px Arial";
@@ -127,7 +127,7 @@ export default {
 
         if(i===0) continue;
         ctx.beginPath();
-        ctx.strokeStyle = "#566a80";
+        ctx.strokeStyle = "rgb(255, 120, 52)";
         ctx.moveTo(30+x_space*i,parseInt((this.can_height-30)*(1-(this.x_xnum[i-1][1]/(this.y_num[y_length-1]-this.y_num[0])))));
         ctx.lineTo(30+x_space*(i+1), parseInt((this.can_height-30)*(1-(this.x_xnum[i][1]/(this.y_num[y_length-1]-this.y_num[0])))));
         ctx.stroke();

@@ -2,12 +2,12 @@
   <div class="shopMain">
     <div class="header">
       <div class="shopName">
-        acefeng
+        {{userName}}
         <span :class="{'tag': true, 'isVip': isVip}">SVIP</span>
       </div>
       <div class="userName">
         <img src="https://img.yzcdn.cn/upload_files/avatar.png" alt="" width="20">
-        <span>18846420881</span>
+        <span>{{phone}}</span>
         <i class="el-icon-arrow-right" style="vertical-align: middle;"></i>
       </div>
     </div>
@@ -26,8 +26,14 @@ export default {
   },
   data () {
     return {
-      isVip: true
+      isVip: true,
+      phone: 0,
+      userName: ''
     }
+  },
+  created () {
+    this.phone = _global.phone;
+    this.userName = _global.userName;
   },
   methods: {
    

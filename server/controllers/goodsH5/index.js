@@ -9,7 +9,7 @@ class goodsH5Index {
     const goodsId = ctx.query.goods_id;
     const globalGoods = await Goods.getGoodsMainById(goodsId);
     const globalComment = await Comment.getGoodsComment(goodsId);
-    await Goods.addGoodsShowNum(goodsId);
+    await Goods.addGoodsShowNum(goodsId, globalGoods.user_id);
     await ctx.render('goodsH5', {
         title: 'goodsH5',
         n_env,

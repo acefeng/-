@@ -123,6 +123,64 @@ class dataIndex extends BaseControllers{
       result
     }
   }
+
+  async getDataGoodsSummary(ctx) {
+    const userId = ctx.session.userId;
+    let result = {
+      showedGoodsKindsNum: 0,
+      haveGoodsNum: 0,
+      showGoodsNum: 0
+    };
+    await Goods.getGoodsShowNum(userId).then(data => {
+      data.forEach(item => {
+        result.showGoodsNum += item.goods_show_num;
+      })
+      result.showedGoodsKindsNum = data.length;
+    }).catch((err) => {
+      console.log(err);
+    })
+    await Goods.searchAllGoods(userId).then(data => {
+      result.haveGoodsNum = data.length;
+    }).catch((err) => {
+      console.log(err);
+    })
+    ctx.body = {
+      code:200,
+      result
+    }
+  }
+
+  async getDataTradeSummary(ctx) {
+    const userId = ctx.session.userId;
+    let result = {
+      showGoodsNum: 0,
+      orderMoney: 0,
+      orderSize: 0
+    };
+    await Goods.getGoodsShowNum(userId).then(data => {
+      data.forEach(item => {
+        result.showGoodsNum += item.goods_show_num;
+      })
+    }).catch((err) => {
+      console.log(err);
+    })
+
+    await order.searchAllOrder(userId).then(data => {
+      data.forEach(item => {
+        if(item.order_state !== 3) {
+          result.orderMoney += item.goods_true_price;
+          result.orderSize++
+        }
+      })
+    }).catch((err) => {
+      console.log(err);
+    })
+    ctx.body = {
+      code: 200,
+      result
+    }
+  }
+  
 }
 
 module.exports = dataIndex;

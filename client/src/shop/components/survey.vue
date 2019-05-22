@@ -5,43 +5,35 @@
         <div class="header_title">
           <h2>经营概况</h2>
           <div class="reset_time">
-            更新时间：2019-04-28 10:36:00
+            更新时间：{{timer}}
           </div>
         </div>
         <ul class="money">
           <li>
             <div>支付金额（元）</div>
-            <div>0.00</div>
-            <div>昨日：0.00</div>
+            <div>{{money}}</div>
+            <div>昨日：{{yesMoney}}</div>
           </li>
           <li>
             <div>支付订单数</div>
-            <div>0</div>
-            <div>昨日：0</div>
+            <div>{{orderNum}}</div>
+            <div>昨日：{{yesOrderNum}}</div>
           </li>
           <li>
             <div>支付人数</div>
-            <div>0</div>
-            <div>昨日：0</div>
+            <div>{{customer}}</div>
+            <div>昨日：{{yesCustomer}}</div>
           </li>
           <li>
-            <div>访客数</div>
-            <div>0</div>
-            <div>昨日：0</div>
+            <div>浏览量</div>
+            <div>{{showGoodsNum}}</div>
+            <div>昨日：---</div>
           </li>
         </ul>
         <ul class="order">
           <li>
             <div>待发货订单</div>
-            <div>0</div>
-          </li>
-          <li>
-            <div>维权订单</div>
-            <div>0</div>
-          </li>
-          <li>
-            <div>未回复客户数</div>
-            <div>0</div>
+            <div>{{checkOrderState}}</div>
           </li>
         </ul>
       </div>
@@ -50,12 +42,12 @@
           <h2>常用功能</h2>
         </div>
         <ul class="show_menu">
-          <li>发布商品</li>
-          <li>编辑微页面</li>
-          <li>微信公众号</li>
+          <li><a href="/goods#/">发布商品</a></li>
+          <li><a href="/goods#/">商品管理</a></li>
+          <li><a href="/order#/">订单管理</a></li>
           <li>帮助中心</li>
-          <li>收入提现</li>
-          <li>人工客服</li>
+          <li><a href="/customer#/">客户管理</a></li>
+          <li><a href="/data#/">数据概览</a></li>
         </ul>
       </div>
       <div class="suggest">
@@ -93,10 +85,40 @@ export default {
   name: 'app',
   data () {
     return {
+      checkOrderState: 0,
+      customer: 0,
+      money: 0,
+      orderNum: 0,
+      showGoodsNum: 7,
+      yesCustomer: 0,
+      yesMoney: 0,
+      yesOrderNum: 0,
+      timer:''
     }
   },
+  created() {
+    this.getAllDate();
+  },
   methods: {
-   
+    getAllDate() {
+      this.$axios({
+        method: "post",
+        url: "/getShopAllDate",
+      }).then((res) => {
+        const data = res.data.result;
+        this.checkOrderState=data.checkOrderState;
+        this.customer=data.customer;
+        this.money=data.money;
+        this.orderNum=data.orderNum;
+        this.showGoodsNum=data.showGoodsNum;
+        this.yesCustomer=data.yesCustomer;
+        this.yesMoney=data.yesMoney;
+        this.yesOrderNum=data.yesOrderNum;
+        this.timer=data.timer;
+      }).catch((err) => {
+        console.log(err);
+      })
+    }
   }
 }
 </script>
@@ -247,9 +269,12 @@ export default {
       box-sizing: border-box;
       margin-bottom: 30px;
       display: inline-block;
-      color: #333;
       font-size: 12px;
-
+      
+      a {
+        color: #333;
+        text-decoration: none;
+      }
       &:nth-child(1) {
         background: url('../assets/sprite.png') no-repeat;
         background-position: 15px -722px;

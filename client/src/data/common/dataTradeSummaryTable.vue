@@ -8,59 +8,47 @@
         <div>
           <ul>
             <li>
-              <div>访客数</div>
-              <div>0</div>
+              <div>浏览量</div>
+              <div>{{showNum}}</div>
             </li>
           </ul>
         </div>
         <div>
           <ul>
            <li>
-              <div>下单人数</div>
-              <div>0</div>
-            </li>
-            <li>
-              <div>下单笔数</div>
-              <div>0</div>
+              <div>下单数</div>
+              <div>{{orderNum}}</div>
             </li>
             <li>
               <div>下单金额</div>
-              <div>0</div>
+              <div>{{orderMoney}}</div>
             </li>
           </ul>
         </div>
         <div>
           <ul>
-           <li>
-              <div>支付人数</div>
-              <div>0</div>
-            </li>
             <li>
               <div>支付订单数</div>
-              <div>0</div>
+              <div>{{orderNum}}</div>
             </li>
             <li>
               <div>支付金额</div>
-              <div>0</div>
-            </li>
-            <li>
-              <div>支付件数</div>
-              <div>0</div>
+              <div>{{orderMoney}}</div>
             </li>
           </ul>
         </div>
         <div class="data_trade_img">
           <div>
             <div>转化率</div>
-            <div>0%</div>
+            <div>{{ (orderNum/showNum*100).toFixed(2) }}%</div>
           </div>
           <div>
             <div>转化率</div>
-            <div>0%</div>
+            <div>{{ (orderNum/showNum*100).toFixed(2) }}%</div>
           </div>
           <div>
             <div>转化率</div>
-            <div>0%</div>
+            <div>{{ (orderNum/orderNum*100).toFixed(2) }}%</div>
           </div>
         </div>
       </div>
@@ -70,16 +58,30 @@
 
 <script>
 export default {
-  components: {
-  },
-  props: {
-
-  },
   data () {
     return {
+      showNum: 0,
+      orderNum: 0,
+      orderMoney: 0,
     }
   },
+  created () {
+    this.getData();
+  },
   methods: {
+    getData() {
+      this.$axios({
+        method: "post",
+        url: "/getDataTradeSummary",
+      }).then((res) => {
+        const data = res.data.result;
+        this.showNum = data.showGoodsNum;
+        this.orderNum = data.orderSize;
+        this.orderMoney = data.orderMoney;
+      }).catch(err => {
+        console.log(err);
+      })
+    }
   }
 }
 </script>
